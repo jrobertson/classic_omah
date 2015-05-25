@@ -8,9 +8,10 @@ require 'sps-pub'
 
 class ClassicOmah
 
-  def initialize(user: 'user', filepath: '.', mail: {}, sps: {})
+  def initialize(user: 'user', filepath: '.', mail: {}, sps: {}, email_address: nil)
 
-    @user = user
+    @user = user    
+
     @mail = {    address: '',
                     port: 110,
                user_name: '',
@@ -21,14 +22,17 @@ class ClassicOmah
     return "ClassicOmah: missing %s" % field if field
 
     @sps = SPSPub.new(address: sps[:address], port: sps[:port]) if sps
+    @email_address = email_address ? email_address : \
+          @mail[:user_name] + '@' + @mail[:address].split('.')[1..-1].join('.')
 
     Dir.chdir filepath
 
   end
 
   def fetch_email()
-
-    Mail.defaults { retriever_method :pop3, @mail }
+    
+    mail = @mail
+    Mail.defaults { retriever_method(:pop3, mail) }
 
     email = Mail.all
     return 'no new messages' unless email.any?
@@ -60,14 +64,15 @@ class ClassicOmah
     # messages are stored to the file dynarexdaily.xml
     o.store messages
 
-    if @sps then
-      
-      m = 'message'
-      m += 's' if messages.length > 1
-      @sps.notice "email/new/%s: received %s new %s" \
-                                    % [@mail[:user_name], messages.length, m]
-    end
+    m = 'message'
+    m += 's' if messages.length > 1
+    fqm = "email/new: %s received %s new %s" \
+                                  % [@email_address, messages.length, m]
+    
+    @sps.notice fqm if @sps
 
     Mail.delete_all
+    
+    fqm
   end
 end

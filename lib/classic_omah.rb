@@ -4,14 +4,14 @@
 
 require 'mail'
 require 'omah'
-require 'sps-pub'
 
-class ClassicOmah
 
-  def initialize(user: 'user', filepath: '.', mail: {}, sps: {}, email_address: nil)
+class ClassicOmah < Omah
 
-    @user = user    
+  def initialize(user: 'user', filepath: '.', mail: {}, \
+               email_address: nil, options: {xslt: 'listing.xsl'}, plugins: [])
 
+    
     @mail = {    address: '',
                     port: 110,
                user_name: '',
@@ -19,14 +19,14 @@ class ClassicOmah
               enable_ssl: false }.merge mail
 
     field = %i(address user_name password).detect {|x| @mail[x].empty?}
-    return "ClassicOmah: missing %s" % field if field
-
-    @sps = SPSPub.new(address: sps[:address], port: sps[:port]) if sps
-    @email_address = email_address ? email_address : \
-          @mail[:user_name] + '@' + @mail[:address].split('.')[1..-1].join('.')
-
-    Dir.chdir filepath
-
+    return "ClassicOmah: missing %s" % field if field        
+    
+    @variables = {user_name: @mail[:user_name] , \
+                  address: @mail[:address], email_address: email_address}
+    
+    super(user: user, filepath: filepath, plugins: plugins, options: options)    
+    
+    
   end
 
   def fetch_email()
@@ -59,20 +59,11 @@ class ClassicOmah
 
     end
 
-    o = Omah.new user: @user
 
-    # messages are stored to the file dynarexdaily.xml
-    o.store messages
-
-    m = 'message'
-    m += 's' if messages.length > 1
-    fqm = "email/new: %s received %s new %s" \
-                                  % [@email_address, messages.length, m]
-    
-    @sps.notice fqm if @sps
+    # messages are stored in the file dynarexdaily.xml
+    self.store messages
 
     Mail.delete_all
-    
-    fqm
+    messages.length.to_s + " new messages"
   end
 end
