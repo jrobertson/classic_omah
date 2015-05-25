@@ -8,7 +8,7 @@
             password: 'secret'
            }
 
-    comah = ClassicOmah.new mail: mail, sps: {address: 'sps', port: 59000}
+    comah = ClassicOmah.new mail: mail
     comah.fetch_email
 
 The above example demonstrates how I fetch the email from my email server. Classic_omah does the following:
@@ -17,7 +17,6 @@ The above example demonstrates how I fetch the email from my email server. Class
 2. retrieves all messages in the inbox
 3. stores the messages in a file directory called *email*
 4. deletes all messages from the inbox
-5. publishes an SPS message to announce new email has been received.
 
 
 ## Resources
