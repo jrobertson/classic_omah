@@ -61,9 +61,11 @@ class ClassicOmah
     o.store messages
 
     if @sps then
-
-      @sps.notice "email/new/%s: received %s new messages" \
-                                       % [@mail[:user_name], messages.length]
+      
+      m = 'message'
+      m += 's' if messages.length > 1
+      @sps.notice "email/new/%s: received %s new %s" \
+                                    % [@mail[:user_name], messages.length, m]
     end
 
     Mail.delete_all
