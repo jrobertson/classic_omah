@@ -43,7 +43,7 @@ class ClassicOmah < Omah
 
       begin
         r << {
-          id:         msg.message_id,
+          msg_id:     msg.message_id,
           from:       msg.from.is_a?(Array) ? msg.from.join(', ') : msg.from,
           to:         msg.to.is_a?(Array) ? msg.to.join(', ') : msg.to,
           subject:    msg.subject,

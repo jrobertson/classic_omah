@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'classic_omah'
-  s.version = '0.2.0'
+  s.version = '0.2.1'
   s.summary = 'Mail gem + Omah (Offline Mail Helper) gem'
   s.authors = ['James Robertson']
   s.files = Dir['lib/**/*.rb']
