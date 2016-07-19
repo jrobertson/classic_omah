@@ -6,20 +6,23 @@ require 'mail'
 require 'omah'
 
 
+class ClassicOmahException < Exception 
+end
+
 class ClassicOmah < Omah
 
   def initialize(user: 'user', filepath: '.', mail: {}, \
                email_address: nil, options: {xslt: 'listing.xsl'}, plugins: [])
-
-    
+        
     @mail = {    address: '',
                     port: 110,
                user_name: '',
                 password: '',
               enable_ssl: false }.merge mail
 
-    field = %i(address user_name password).detect {|x| @mail[x].empty?}
-    return "ClassicOmah: missing %s" % field if field        
+    field = %i(address user_name password).detect {|x| @mail[x].to_s.empty?}
+
+    raise ClassicOmahException, "missing %s" % field if field        
     
     @variables = {user_name: @mail[:user_name] , \
                   address: @mail[:address], email_address: email_address}
@@ -35,10 +38,11 @@ class ClassicOmah < Omah
     Mail.defaults { retriever_method(:pop3, mail) }
 
     email = Mail.all
+
     return 'no new messages' unless email.any?
 
     messages = email.map.with_index.inject([]) do |r, x|
-
+      
       msg, i = x
 
       begin
@@ -58,12 +62,12 @@ class ClassicOmah < Omah
     r
 
     end
-
-
+    
     # messages are stored in the file dynarexdaily.xml
     self.store messages
 
     Mail.delete_all
+
     messages.length.to_s + " new messages"
   end
 end
