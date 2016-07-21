@@ -54,7 +54,8 @@ class ClassicOmah < Omah
           date:       msg.date.to_s,
           body_text:  (msg.text_part ? msg.text_part.body.decoded : msg.body),
           body_html:  (msg.html_part ? msg.html_part.body.decoded : msg.body), 
-          attachments: msg.attachments.map {|x| [x.filename, x.body.decoded] }
+          attachments: msg.attachments.map {|x| [x.filename, x.body.decoded] },
+          raw_source: msg.raw_source
         }
       rescue
         puts 'warning: ' + ($!).inspect
