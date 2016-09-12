@@ -11,11 +11,11 @@ end
 
 class ClassicOmah < Omah
 
-  def initialize(user: 'user', filepath: '.', mail: {}, \
+  def initialize(user: 'user', filepath: '.', mail: {}, port: 110 \
                email_address: nil, options: {xslt: 'listing.xsl'}, plugins: [])
         
     @mail = {    address: '',
-                    port: 110,
+                    port: port,
                user_name: '',
                 password: '',
               enable_ssl: false }.merge mail
@@ -60,7 +60,8 @@ class ClassicOmah < Omah
       rescue
         puts 'warning: ' + ($!).inspect
       end
-    r
+
+      r
 
     end
     
