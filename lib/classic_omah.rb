@@ -11,7 +11,7 @@ end
 
 class ClassicOmah < Omah
 
-  def initialize(user: 'user', filepath: '.', mail: {}, port: 110 \
+  def initialize(user: 'user', filepath: '.', mail: {}, port: 110, \
                email_address: nil, options: {xslt: 'listing.xsl'}, plugins: [])
         
     @mail = {    address: '',
